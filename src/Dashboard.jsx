@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { buttonStyle, scoreBoardInput, scoreBoardText } from "../lib/styles";
+import useUsers from "../hooks/useUsers";
 
-function Dashboard({ setActive }) {
+function Dashboard({ setActive, players, setPlayers }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [users, addUser, updateUsers] = useUsers();
+  const [selected, setSelected] = useState("");
+  const [value, setValue] = useState("");
 
   function handleClick() {
     setModalOpen((modalOpen) => !modalOpen);
@@ -14,14 +18,19 @@ function Dashboard({ setActive }) {
     setSelected("");
   }
 
-  function addPlayer() {}
+  function playGame() {
+    setActive("Game");
+  }
 
-  // Temporary players before localstorage
-  const player = ["Dennis", "Thatsaniya"];
+  function addPlayer() {
+    addUser(value);
+    setValue("");
+    setPlayers((prev) => ({ ...prev, [value]: {} }));
+  }
 
-  const [selected, setSelected] = useState("");
-  const [players, setPlayers] = useState({});
-  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(players);
+  }, [players]);
 
   return (
     <>
@@ -52,27 +61,32 @@ function Dashboard({ setActive }) {
               <option className="" value={""}>
                 Select Players
               </option>
-              {player.map((p) => (
+              {/* {users.map((p) => (
                 <option key={p}>{p}</option>
+              ))} */}
+              {Object.keys(users).map((user) => (
+                <option key={user}>{user}</option>
               ))}
               <option value={"new"}>New player</option>
             </select>
             {selected === "new" && (
-              <div>
+              <div className="mt-5">
                 <input
-                  className="bg-slate-50 rounded-l mt-2 text-black text-center w-40"
+                  className="bg-slate-50 rounded-l text-black text-center w-40"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                 />
                 <button
-                  className="bg-green-400 text-black px-3 mt-1 rounded-r"
+                  className="bg-slate-500 px-3 rounded-r"
                   onClick={addPlayer}
                 >
                   Add
                 </button>
               </div>
             )}
-            <button className={`${buttonStyle} mt-12`}>Play!</button>
+            <button className={`${buttonStyle} mt-12`} onClick={playGame}>
+              Play!
+            </button>
           </div>
         </div>
       )}

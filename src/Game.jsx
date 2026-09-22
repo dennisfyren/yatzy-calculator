@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { scoreBoardInput, scoreBoardText } from "../lib/styles";
+import { entryText, scoreBoardInput, scoreBoardText } from "../lib/styles";
 
 function Game({ players }) {
+  console.log(players);
   const bonusEntries = {
     1: null,
     2: null,
@@ -34,8 +35,6 @@ function Game({ players }) {
     console.log(e.target.value);
   }
 
-  const playerNumber = 2;
-
   return (
     <div className="flex flex-col py-3">
       <p className="text-2xl mb-4 self-center">Maxi Yatzy!</p>
@@ -43,8 +42,11 @@ function Game({ players }) {
         <div className="flex flex-col">
           <div>
             <div className="flex flex-col gap-1 mb-1">
+              <p className={scoreBoardText}>Spelare:</p>
               {Object.keys(bonusEntries).map((number) => (
-                <p className={scoreBoardText}>{number}</p>
+                <p className={scoreBoardText} key={number}>
+                  {number}
+                </p>
               ))}
             </div>
             <div className="flex flex-col gap-1">
@@ -60,7 +62,31 @@ function Game({ players }) {
             </div>
           </div>
         </div>
-        <div></div>
+        {Object.keys(players).map((player) => (
+          <div key={player}>
+            <div className="flex flex-col gap-1">
+              <p className={entryText}>{player.slice(0, 1).toUpperCase()}</p>
+              {Object.keys(bonusEntries).map((entry) => (
+                <input
+                  type="number"
+                  className={scoreBoardInput}
+                  key={`${entry}-${player}`}
+                />
+              ))}
+              <input type="number" className={scoreBoardInput} id="summa" />
+              <input type="number" className={scoreBoardInput} id="bonus" />
+            </div>
+            <div className="flex flex-col gap-1 mt-3">
+              {entries.map((entry) => (
+                <input
+                  type="number"
+                  key={`${entry}-${player}`}
+                  className={scoreBoardInput}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

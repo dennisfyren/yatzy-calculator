@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { buttonStyle, scoreBoardInput, scoreBoardText } from "../lib/styles";
 import useUsers from "../hooks/useUsers";
+import { X } from "lucide-react";
 
-function Dashboard({ setActive, players, setPlayers }) {
+function Dashboard({
+  setActive,
+  players,
+  setPlayers,
+  users,
+  addUsers,
+  updateUsers,
+}) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [users, addUser, updateUsers] = useUsers();
   const [selected, setSelected] = useState("");
   const [value, setValue] = useState("");
 
@@ -23,9 +30,19 @@ function Dashboard({ setActive, players, setPlayers }) {
   }
 
   function addPlayer() {
-    addUser(value);
+    const newPlayer = value.trim().toLowerCase();
+    addUser(newPlayer);
+    setSelected("");
     setValue("");
-    setPlayers((prev) => ({ ...prev, [value]: {} }));
+    setPlayers((prev) => ({ ...prev, [newPlayer]: {} }));
+  }
+
+  function removePlayer(player) {
+    setPlayers((prev) => {
+      const updated = { ...prev };
+      delete updated[player];
+      return updated;
+    });
   }
 
   useEffect(() => {
@@ -50,7 +67,16 @@ function Dashboard({ setActive, players, setPlayers }) {
             </button>
             <div className="flex flex-col items-center gap-1 mb-6 tracking-wide">
               {Object.keys(players).map((name) => (
-                <p key={name}>{name}</p>
+                <div className="flex items-center">
+                  <p key={name}>
+                    {name.slice(0, 1).toUpperCase() + name.slice(1)}
+                  </p>
+                  <X
+                    size={20}
+                    className="text-red-500 ml-2"
+                    onClick={() => removePlayer(name)}
+                  />
+                </div>
               ))}
             </div>
             <select
@@ -65,7 +91,9 @@ function Dashboard({ setActive, players, setPlayers }) {
                 <option key={p}>{p}</option>
               ))} */}
               {Object.keys(users).map((user) => (
-                <option key={user}>{user}</option>
+                <option key={user}>
+                  {user.slice(0, 1).toUpperCase() + user.slice(1)}
+                </option>
               ))}
               <option value={"new"}>New player</option>
             </select>
@@ -75,6 +103,11 @@ function Dashboard({ setActive, players, setPlayers }) {
                   className="bg-slate-50 rounded-l text-black text-center w-40"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      addPlayer();
+                    }
+                  }}
                 />
                 <button
                   className="bg-slate-500 px-3 rounded-r"

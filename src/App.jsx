@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Dashboard from "./Dashboard";
 import Game from "./Game";
 import Stats from "./Stats";
+import { buttonStyle } from "../lib/styles";
+import useUsers from "../hooks/useUsers";
 
 const views = {
   Game,
@@ -15,6 +17,7 @@ function App() {
   const [active, setActive] = useState("Dashboard");
   const CurrentView = views[active];
   const [players, setPlayers] = useState({});
+  const [users, addUser, updateUsers] = useUsers();
 
   return (
     <div className="grid h-screen grid-cols-1 grid-rows-[1fr_auto] bg-slate-900 text-white">
@@ -23,15 +26,19 @@ function App() {
           setActive={setActive}
           players={players}
           setPlayers={setPlayers}
+          users={users}
+          addUser={addUser}
+          updateUsers={updateUsers}
         />
       </main>
-      {/* <nav className="grid grid-cols-3 bg-slate-800 items-center">
-        {nav.map((view) => (
-          <button className="h-16" key={view} onClick={() => setActive(item)}>
-            {view}
-          </button>
-        ))}
-      </nav> */}
+      {active === "Dashboard" && (
+        <button
+          className={`${buttonStyle} w-full`}
+          onClick={() => setActive("Stats")}
+        >
+          Statistik
+        </button>
+      )}
     </div>
   );
 }

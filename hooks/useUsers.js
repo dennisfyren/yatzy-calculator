@@ -29,7 +29,7 @@ function useUsers() {
           minScore: Math.min(prev[user].minScore, gameData.players[user].score),
           maxScore: Math.max(prev[user].maxScore, gameData.players[user].score),
           totalScore: totalScore,
-          avgScore: totalScore / gamesPlayed,
+          avgScore: Math.round((totalScore / gamesPlayed) * 10) / 10,
           numYatzy:
             prev[user].numYatzy + (gameData.players[user].yatzy ? 1 : 0),
         };
@@ -38,7 +38,19 @@ function useUsers() {
     });
   }
 
-  return [users, addUser, updateUsers];
+  function removeUser(user) {
+    setUsers((prev) => {
+      const updated = { ...prev };
+      delete updated[user];
+      return updated;
+    });
+  }
+
+  function resetUser(user) {
+    addUser(user);
+  }
+
+  return [users, addUser, updateUsers, removeUser, resetUser];
 }
 
 export default useUsers;

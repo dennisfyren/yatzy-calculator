@@ -11,13 +11,11 @@ const views = {
   Stats,
 };
 
-const nav = Object.keys(views);
-
 function App() {
   const [active, setActive] = useState("Dashboard");
   const CurrentView = views[active];
   const [players, setPlayers] = useState({});
-  const [users, addUser, updateUsers] = useUsers();
+  const [users, addUser, updateUsers, removeUser, resetUser] = useUsers();
 
   return (
     <div className="grid h-screen grid-cols-1 grid-rows-[1fr_auto] bg-slate-900 text-white">
@@ -29,6 +27,8 @@ function App() {
           users={users}
           addUser={addUser}
           updateUsers={updateUsers}
+          removeUser={removeUser}
+          resetUser={resetUser}
         />
       </main>
       {active === "Dashboard" && (
